@@ -15,6 +15,11 @@ public class PlayerController : MonoBehaviour
     private Vector2 input;
     private Animator animator;
 
+    private void Awake() 
+    {
+        animator = GetComponent<Animator>();
+    }
+
     private void Update()
     {
         if (!isMoving)
@@ -26,6 +31,8 @@ public class PlayerController : MonoBehaviour
 
             if (input != Vector2.zero)
             {
+                animator.SetFloat("moveX", input.x);
+                animator.SetFloat("moveY", input.y);
                 var targetPosition = transform.position;
                 targetPosition.x += input.x;
                 targetPosition.y += input.y;
@@ -33,6 +40,8 @@ public class PlayerController : MonoBehaviour
                     StartCoroutine(Move(targetPosition));
             }
         }
+
+        animator.SetBool("isMoving", isMoving);
         // if (Input.GetKeyDown(KeyCode.F))
         //     Interact();
     }
@@ -54,9 +63,7 @@ public class PlayerController : MonoBehaviour
     IEnumerator Move(Vector3 targetPosition)
     {
         isMoving = true;
-        while ((targetPosition - transform.position).sqrMagnitude >
-            Mathf.Epsilon
-        )
+        while ((targetPosition - transform.position).sqrMagnitude > Mathf.Epsilon) //check whether difference between target position and players current position is > than a small number ensuring that the object moves exactly to its target position 
         {
             transform.position =
                 Vector3
